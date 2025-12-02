@@ -1,10 +1,11 @@
 ## VLA and RL
 
+Single arm VLA policy implementation on XLeRobot:
+
 <video width="100%" controls>
   <source src="" type="video/mp4">
   Your browser does not support the video tag.
 </video>
-_Single arm VLA policy implementation on XLeRobot._
 
 # Vision-Language-Action (VLA) Training for XLeRobot
 
@@ -152,8 +153,6 @@ After collecting your datasets, refer to the LeRobot [training tutorial](https:/
 ## 4. Deploy a Model
 
 The simplest way to test your trained model:
-```
-The command will look like:
 ```python
 python /your_dir/lerobot/src/lerobot/record.py \
   --robot.type=xlerobot \
