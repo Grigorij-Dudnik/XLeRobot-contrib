@@ -40,7 +40,7 @@ turn_left = create_turn_left(servo_controler)
 turn_right = create_turn_right(servo_controler)
 ```
 
-in place of `"/dev/ttyUSB0"` you should provide the USB port name of your right arm (one connected to the wheels).
+in place of `/dev/arm_right` you should provide the USB port name of your right arm (one connected to the wheels).
 
 Next, let's initialize an agent itself:
 
@@ -64,16 +64,16 @@ agent.go()
 
 In the code above we initialized our agent with the maneuver tools we created earlier. You can provide any model in LangChain notation. Next, we hard-coding a task for our agent and running it.
 
-Before going to LLM, camera image is specially augmented to make it easier for robot to undersstand his environment: 
+Before going to LLM, camera image is specially augmented to make it easier for robot to understand its environment: 
 
 <div style="text-align: center; font-style: italic">
   <img src="https://github.com/user-attachments/assets/31f063b9-2463-4ba5-b5da-311f16788576" width="60%">
   <p>That's how your robot sees the world.</p>
 </div>
 
-Also, create the `.env` file with parameter `GOOGLE_API_KEY=<your gemini api key here>` besides to connect to LLM.
+Also, create the `.env` file with parameter `GOOGLE_API_KEY=<your gemini api key here>` beside the script to connect to LLM.
 
-Now run the code and watch if your XLeRobot will be able to find that kitchen - then it will finish its work by calling `finish_task` tool!
+Now run the code and watch your XLeRobot approaching you - then it will finish its work by calling `finish_task` tool!
 
 Complete code is here:
 
@@ -111,7 +111,7 @@ agent.go()
 
 ## Set up Udev rules
 
-Before proceeding to more advanced examples, let's do optional, but highly recommended step - make the usb port names for arms and cameras constant, to avoid swapping that names after every Raspberry Pi reboot. To do it, we need to set up udev rules. Hopefully, RoboCrew already contains an utility that makes a complicated process of setting up udevs a matter of few clicks.
+Before proceeding to more advanced examples, let's do optional, but highly recommended step - make the usb port names for arms and cameras constant, to avoid swapping that names after every Raspberry Pi reboot. To do it, we need to set up udev rules. Luckily, RoboCrew already contains an utility that makes a complicated process of setting up udevs a matter of few clicks.
 
 Run:
 
@@ -146,7 +146,7 @@ agent = LLMAgent(
 agent.go()
 ```
 
-As you can see, we need to provide index of our soundcard with microphone. We can also set up our wakeword (default is "robot") - when robot hears that word in your sentence, it threats it as its new task; otherwise ignores it.
+As you can see, we need to provide index of our soundcard with microphone. We can also set up our wakeword (default is "robot") - when robot hears that word in your sentence, it treats it as its new task; otherwise ignores it.
 
 We can also set up `history_len` - how many of last movements robot should keep in the memory, to avoid memory overflow.
 
@@ -182,10 +182,9 @@ agent = LLMAgent(
     tts=True,               # enable text-to-speech (robot can speak).
 )
 
-agent.task = "Wait for the voice commends and execute."
+agent.task = "Wait for the voice commands and execute."
 
 agent.go()
-
 ```
 
 ## Activate arm manipulation
@@ -194,14 +193,14 @@ Let's go to the most advanced and useful part of our agent - the arms manipulati
 
 First of all, you need to train the policy agent will utilize later. Reference [VLA tutorial](https://xlerobot.readthedocs.io/en/latest/software/getting_started/RL_VLA.html) to learn how to do it.
 
-Let's assume you trained VLA policy that grabs a cup from the table and put it in the robot basket (for further transportation to dishwasher). Let's add it as a tool for your agent:
+Let's assume you trained VLA policy that grabs a notebook from the table and put it in the robot basket (for further transportation). Let's add it as a tool for your agent:
 
 ```python
 from robocrew.robots.XLeRobot.tools import create_vla_single_arm_manipulation
 
 pick_up_notebook = create_vla_single_arm_manipulation(
     tool_name="Grab_a_notebook",
-    tool_description="Manipulation tool to grab a notebook from the table and put it to your basket. Use the tool only when you are very very close to table with a notebook, and look straingt on it.",
+    tool_description="Manipulation tool to grab a notebook from the table and put it to your basket.",
     task_prompt="Grab a notebook.",
     server_address="0.0.0.0:8080",
     policy_name="Grigorij/act_right-arm-grab-notebook-2",
@@ -216,7 +215,7 @@ pick_up_notebook = create_vla_single_arm_manipulation(
 
 Provide the tool with parameters your custom tool name and description - that's what LLM will see. Also, provide VLA-related parameters - as the name of your trained policy on HF hub, policy type, camera config (same you used during dataset collection).
 
-Then add created `grab_a_cup` tool to the tools of your agent.
+Then add created `pick_up_notebook` tool to the tools of your agent.
 
 Our tool is a policy client, but all VLA computations are run on the server side. We need to run policy server - on Raspberry Pi only in case of light-weight ACT policy, on different computer for all other policies. Run your server with:
 
@@ -271,7 +270,7 @@ go_to_normal_mode = create_go_to_normal_mode(servo_controler)
 
 pick_up_notebook = create_vla_single_arm_manipulation(
     tool_name="Grab_a_notebook",
-    tool_description="Manipulation tool to grab a notebook from the table and put it to your basket. Use the tool only when you are very very close to table with a notebook, and look straingt on it.",
+    tool_description="Manipulation tool to grab a notebook from the table and put it to your basket.",
     task_prompt="Grab a notebook.",
     server_address="0.0.0.0:8080",
     policy_name="Grigorij/act_right-arm-grab-notebook-2",
@@ -285,7 +284,7 @@ pick_up_notebook = create_vla_single_arm_manipulation(
 
 give_notebook = create_vla_single_arm_manipulation(
     tool_name="Give_a_notebook_to_a_human",
-    tool_description="Manipulation tool to take a notebook from your basket and give it to human. Use the tool only when you are close to the human (base of human is below green line), and look straingt on him.",
+    tool_description="Manipulation tool to take a notebook from your basket and give it to human.",
     task_prompt="Grab a notebook and give it to a human.",
     server_address="0.0.0.0:8080",
     policy_name="Grigorij/act_right_arm_give_notebook",
