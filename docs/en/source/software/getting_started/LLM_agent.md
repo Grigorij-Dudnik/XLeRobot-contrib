@@ -221,7 +221,7 @@ pick_up_notebook = create_vla_single_arm_manipulation(
 
 Provide the tool with parameters your custom tool name and description - that's what LLM will see. Also, provide VLA-related parameters - as the name of your trained policy on HF hub, policy type, camera config (same you used during dataset collection).
 
-Then add created `pick_up_notebook` tool to the tools of your agent.
+Then add created `pick_up_notebook` tool to the tools of your agent. You can create as many manipulation tools as you want.
 
 Our tool is a policy client, but all VLA computations are run on the server side. We need to run policy server - on Raspberry Pi only in case of light-weight ACT policy, on different computer for all other policies. Run your server with:
 
@@ -233,7 +233,7 @@ python -m lerobot.async_inference.policy_server \
 
 In case you using external computer in your local network as a server, provide its IP instead of zeros to `server_address` parameter like: `server_address="123.234.12.34:8080"`
 
-That's it! Prompt your robot to grab a cup from the table and give it to you!
+That's it! Prompt your robot to grab a notebook from the table and give it to you!
 
 In the full code, we also added more movement tools for more precision navigation:
 
