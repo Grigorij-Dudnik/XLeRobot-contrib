@@ -1,6 +1,6 @@
 ## LLM Agent Control
 
-Imagine telling the robot "go cleanup my kitchen" and watching it doing so. This tutorial will show you how you can make your XLeRobot fully autonomous, self-decision making machine by providing it with LLM agent. An agent that, by seeing world through camera and hearing your voice commands, be able to move the robot and manipulate objects using VLA policies.
+Imagine telling the robot "go cleanup my kitchen" and watching it doing so. This tutorial will show you how you can make your XLeRobot fully autonomous, self-decision making machine by providing it with LLM agent. An agent that uses camera vision and voice commands to move the robot and manipulate objects with VLA policies.
 
 Demo of agent controlling XLeRobot, that has a task to grab a notebook and give it to human:
 
@@ -9,7 +9,7 @@ Demo of agent controlling XLeRobot, that has a task to grab a notebook and give 
   To be uploaded.
 </video>
 
-## Getting Started
+### Getting Started
 
 To create our agent, we will use the [RoboCrew](https://github.com/Grigorij-Dudnik/RoboCrew) library - one specially designed for embodied agents. On your control device (Raspberry Pi or laptop) create a new virtual environment and install it with:
 
@@ -109,7 +109,7 @@ agent.task = "Approach a human."
 agent.go()
 ```
 
-## Set up Udev rules
+### Set up Udev rules
 
 Before proceeding to more advanced examples, let's do optional, but highly recommended step - make the usb port names for arms and cameras constant, to avoid swapping those names after every Raspberry Pi reboot. To do it, we need to set up udev rules. Luckily, RoboCrew already contains an utility that makes a complicated process of setting up udevs a matter of few clicks.
 
@@ -121,7 +121,7 @@ robocrew-setup-usb-modules
 
 Utility will ask you to disconnect all usbs and then connect one after another - that way your usb devices will receive a constant names.
 
-## Voice-conrolled agent
+### Voice-conrolled agent
 
 We managed to run our simple agent, now let's give it an ability to listen to our voice commands through the microphone.
 
@@ -193,7 +193,7 @@ agent.task = "Wait for the voice commands and execute."
 agent.go()
 ```
 
-## Activate arm manipulation
+### Activate arm manipulation
 
 Let's go to the most advanced and useful part of our agent - the arms manipulation through VLA policies! That allows the robot to make full range of household tasks - like throwing out a trash or bringing you a tea from kitchen.
 
