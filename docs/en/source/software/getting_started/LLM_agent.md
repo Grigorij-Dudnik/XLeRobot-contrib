@@ -6,7 +6,7 @@ Demo of agent controlling XLeRobot, that has a task to grab a notebook and give 
 
 <video width="100%" controls>
   <source src="https://github-production-user-asset-6210df.s3.amazonaws.com/50213363/528949330-faf375cf-d29a-4b1b-b0b1-da474c7006fe.mov?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20251221%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251221T111424Z&X-Amz-Expires=300&X-Amz-Signature=3cc0d5a82bf005bb517e77f3fdcd59f906601cb0a8df5158e3e50806067c734a&X-Amz-SignedHeaders=host" type="video/mp4">
-  Your browser does not support the video tag.
+  To be uploaded.
 </video>
 
 ## Getting Started
@@ -19,7 +19,7 @@ pip install robocrew
 
 Next, create the python script to control your robot. Let's start by creating a simple agent that performs just one hardcoded task and finishes. 
 
-First, let's create tools for agent to control a wheel movement:
+First, let's initialize camera and create tools for agent to control a wheel movement:
 
 ```python
 from robocrew.core.camera import RobotCamera
@@ -42,7 +42,7 @@ turn_right = create_turn_right(servo_controler)
 
 in place of `/dev/arm_right` you should provide the USB port name of your right arm (one connected to the wheels).
 
-Next, let's initialize an agent itself:
+Next, let's initialize and run an agent itself:
 
 ```python
 # init agent
@@ -111,7 +111,7 @@ agent.go()
 
 ## Set up Udev rules
 
-Before proceeding to more advanced examples, let's do optional, but highly recommended step - make the usb port names for arms and cameras constant, to avoid swapping that names after every Raspberry Pi reboot. To do it, we need to set up udev rules. Luckily, RoboCrew already contains an utility that makes a complicated process of setting up udevs a matter of few clicks.
+Before proceeding to more advanced examples, let's do optional, but highly recommended step - make the usb port names for arms and cameras constant, to avoid swapping those names after every Raspberry Pi reboot. To do it, we need to set up udev rules. Luckily, RoboCrew already contains an utility that makes a complicated process of setting up udevs a matter of few clicks.
 
 Run:
 
@@ -123,13 +123,15 @@ Utility will ask you to disconnect all usbs and then connect one after another -
 
 ## Voice-conrolled agent
 
-Now that we have managed to run our simple agent, let's give it an ability to listen to our voice commands through the microphone.
+We managed to run our simple agent, now let's give it an ability to listen to our voice commands through the microphone.
 
 First, we need to install Portaudio, to enable our control device to hear:
 
 ```bash
 sudo apt install portaudio19-dev
 ```
+
+Connect to your agent a soundcard with microphone, and optionally speaker, if you want robot to respond to you.
 
 Let's change the agent initialization a little bit:
 
@@ -140,13 +142,16 @@ agent = LLMAgent(
     main_camera=main_camera,
     servo_controler=servo_controler,
     sounddevice_index=2,    # provide your microphone device index.
+    wakeword="hey robot",   # optional - set up custom wakeword (default is "robot")
     tts=True,               # enable text-to-speech (robot can speak).
 )
 
 agent.go()
 ```
 
-As you can see, we need to provide index of our soundcard with microphone. We can also set up our wakeword (default is "robot") - when robot hears that word in your sentence, it treats it as its new task; otherwise ignores it.
+As you can see, we need to provide index of our soundcard with microphone. We can also set up a wakeword (default is "robot") - when robot hears that word in your sentence, it treats sentence as a new task; otherwise ignores it.
+
+`tts=True` is needed if you want robot to speak.
 
 We can also set up `history_len` - how many of last movements robot should keep in the memory, to avoid memory overflow.
 
@@ -179,6 +184,7 @@ agent = LLMAgent(
     main_camera=main_camera,
     servo_controler=servo_controler,
     sounddevice_index=2,    # provide your microphone device index.
+    wakeword="hey robot",   # optional - set up custom wakeword (default is "robot")
     tts=True,               # enable text-to-speech (robot can speak).
 )
 
@@ -229,7 +235,7 @@ In case you using external computer in your local network as a server, provide i
 
 That's it! Prompt your robot to grab a cup from the table and give it to you!
 
-In the full code, we added more movement tools for more precision navigation:
+In the full code, we also added more movement tools for more precision navigation:
 
 ```python
 from robocrew.core.camera import RobotCamera
